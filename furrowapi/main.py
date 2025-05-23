@@ -10,6 +10,8 @@ import shutil
 import uuid
 import openai
 import asyncio
+from pathlib import Path
+
 
 # Configura tu clave de OpenAI (recomendado: usar variable de entorno)
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -76,7 +78,8 @@ async def predecir(
         return JSONResponse(status_code=400, content={"error": f"Cultivo '{cultivo}' no soportado."})
 
     modelo_folder = MAPA_MODELOS.get(cultivo)
-    modelo_path = os.path.join("models", modelo_folder, "best.pt")
+    BASE_DIR = Path(__file__).resolve().parent
+    modelo_path = BASE_DIR / "models" / modelo_folder / "best.pt"
     if not os.path.exists(modelo_path):
         return JSONResponse(status_code=404, content={"error": f"Modelo para '{cultivo}' no encontrado."})
 
@@ -97,7 +100,7 @@ async def predecir(
             os.remove(image_path)
             return JSONResponse(status_code=400, content={"error": "El archivo subido no es una imagen válida."})
 
-        model = YOLO(modelo_path)
+        model = YOLO(str(modelo_path))
         results = model.predict(image_path, conf=0.4)
 
         clases = results[0].names
