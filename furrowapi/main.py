@@ -21,7 +21,7 @@ app = FastAPI()
 # CORS para producción
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://furrowtech.com"],  # Cambia por tu dominio real
+    allow_origins=["https://furrowtech.com", "https://www.furrowtech.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
